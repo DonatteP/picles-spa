@@ -7,20 +7,20 @@
   border-radius: var(--spacing-md);
   font-size: var(--font-size-lg);
 }
-
+ 
 .buttonBase:hover {
   opacity: 0.9;
 }
-
+ 
 .buttonBase:active {
   opacity: 0.75;
 }
-
+ 
 .buttonDefault {
   background-color: var(--color-primary);
   color: var(--color-white);
 }
-
+ 
 .buttonDisabled {
   background-color: var(--color-gray-300);
   border-color: var(--color-gray-300);
@@ -28,17 +28,17 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
+ 
 .buttonDisabled:hover,
 .buttonDisabled:active {
   opacity: 0.5;
 }
-
+ 
 .buttonOutlined {
   background-color: transparent;
   color: var(--color-primary);
 }
-
+ 
 .buttonText {
   width: fit-content;
   padding: 0;
