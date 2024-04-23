@@ -2,7 +2,7 @@ import { Header } from "../../components/common/Header";
 import { Grid } from "../../components/layout/Grid";
 import styles from "./Pets.module.css";
 import { useSearchParams } from "react-router-dom";
-import { usePetList } from "../../hooks";
+import { usePetList } from "../../hooks/usePetList";
 import { Select } from "../../components/common/Select";
 import { Button } from "../../components/common/Button";
 import { filterColumns } from "./Pets.constants";
