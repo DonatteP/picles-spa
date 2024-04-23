@@ -1,4 +1,10 @@
-export const filterColumns = [
+interface IFilterColumns {
+    name: 'gender' | 'size' | 'type'
+    title: string
+    options: { value: string; text: string }[]
+  }
+
+export const filterColumns: IFilterColumns[] = [
     {
         name: "type",
         title: "Espécie",

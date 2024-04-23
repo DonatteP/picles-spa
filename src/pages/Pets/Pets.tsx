@@ -6,13 +6,15 @@ import { usePetList } from "../../hooks";
 import { Select } from "../../components/common/Select";
 import { Button } from "../../components/common/Button";
 import { filterColumns } from "./Pets.constants";
-import { FormEvent } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { GetPetsRequest } from "../../interfaces/pet";
 import Skeleton from "react-loading-skeleton";
 import { Card } from "../../components/common/Card";
 import { Pagination } from "../../components/common/Pagination";
+import { ButtonVariant } from "../../components/common/Button/Button.constants";
 
 export function Pets() {
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const urlParams = {
@@ -24,6 +26,20 @@ export function Pets() {
 
   const { data, isLoading } = usePetList(urlParams);
 
+  function checkButtonStatus(event: ChangeEvent<HTMLFormElement>) {
+    const { type, size, gender } = getFormValue(event.target.form);
+
+    if (
+      type !== urlParams.type ||
+      size !== urlParams.size ||
+      gender !== urlParams.gender
+    ) {
+      setIsButtonEnabled(true);
+    } else {
+      setIsButtonEnabled(false);
+    }
+  }
+
   function changePage(page: number) {
     setSearchParams((params) => {
       params.set("page", String(page));
@@ -31,41 +47,44 @@ export function Pets() {
     });
   }
 
-  
-
   function getFormValue(form: HTMLFormElement) {
-    const formData = new FormData(form)
-    return Object.fromEntries(formData)
+    const formData = new FormData(form);
+    return Object.fromEntries(formData);
   }
 
   function updateSearchParams(urlParams: GetPetsRequest) {
-    const fields: (keyof GetPetsRequest)[] = ['type', 'size', 'gender']
-    const newParams = new URLSearchParams()
+    const fields: (keyof GetPetsRequest)[] = ["type", "size", "gender"];
+    const newParams = new URLSearchParams();
 
     fields.forEach((field) => {
       if (urlParams[field]) {
-        newParams.set(field, String(urlParams[field]))
+        newParams.set(field, String(urlParams[field]));
       }
-    })
-    newParams.set('page', '1')
+    });
+    newParams.set("page", "1");
 
-    return newParams
+    return newParams;
   }
 
   function applyFilters(event: FormEvent) {
-    event.preventDefault()
+    event.preventDefault();
 
-    const formValues = getFormValue(event.target as HTMLFormElement)
-    const newSearchParams = updateSearchParams(formValues)
+    const formValues = getFormValue(event.target as HTMLFormElement);
+    const newSearchParams = updateSearchParams(formValues);
 
-    setSearchParams(newSearchParams)
+    setSearchParams(newSearchParams);
+    setIsButtonEnabled(false);
   }
 
   return (
     <Grid>
       <div className={styles.container}>
         <Header />
-        <form className={styles.filters} onSubmit={applyFilters}>
+        <form
+          className={styles.filters}
+          onSubmit={applyFilters}
+          onChange={checkButtonStatus}
+        >
           <div className={styles.columns}>
             {filterColumns.map((filter) => (
               <div key={filter.name} className={styles.column}>
@@ -78,7 +97,14 @@ export function Pets() {
               </div>
             ))}
           </div>
-          <Button type="submit">Buscar</Button>
+          <Button
+            type="submit"
+            variant={
+              isButtonEnabled ? ButtonVariant.Default : ButtonVariant.Disabled
+            }
+          >
+            Buscar
+          </Button>
         </form>
 
         {isLoading && (
@@ -89,7 +115,7 @@ export function Pets() {
           {data?.items.map((pet) => (
             <Card
               key={pet.id}
-              href={`/pet/${pet.id}`}
+              href={`/pets/${pet.id}`}
               text={pet.name}
               thumb={pet.photo}
             />
@@ -99,7 +125,7 @@ export function Pets() {
           <Pagination
             currentPage={data.currentPage}
             totalPages={data.totalPages}
-            onPageChange={(number) => console.log(number)}
+            onPageChange={(number) => changePage(number)}
           />
         )}
       </div>
